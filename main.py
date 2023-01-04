@@ -12,15 +12,17 @@ def get_orf_region(sequence):
     start_codon_sequence = find_start_codon(sequence)
 
     if start_codon_sequence == "None":
-        print("There is not a start codon in this sequence: " + triplets(sequence) + ".\n")
+        print("There is not a start codon in this sequence: " + sequence + ".\n")
         return
 
-    ORF_Region = find_stop_codons(start_codon_sequence)
+    ORF_Region, rest_sequence = find_stop_codons(start_codon_sequence)
+
 
     if ORF_Region == "None":
         print("None of the three stop codons were found, so ORF region does not exist.\n")
         return
-
+    print("Continue for the rest_sequence.")
+    get_orf_region(rest_sequence)
 
 def find_start_codon(sequence):
     for k in range(0, len(sequence), 1):
@@ -35,13 +37,13 @@ def find_start_codon(sequence):
 
 def find_stop_codons(start_codon_sequence):
     for k in range(0, len(start_codon_sequence), 3):
-    # checking for any of the stop codons in the sequence
+        # checking for any of the stop codons in the sequence
         if any(s in start_codon_sequence[k:k + 3] for s in stop_Codons):
             ORF_Region = start_codon_sequence[:k + 3]
+            rest_sequence = start_codon_sequence[k + 3:]
             print("Stop codon %s found, the ORF_Region is: %s.\n" % (ORF_Region[-3:], triplets(ORF_Region)))
-            return ORF_Region
-    return "None"
-
+            return ORF_Region, rest_sequence
+    return "None", "None"
 
 def triplets(string):
     return ' '.join(string[i:i + 3] for i in range(0, len(string), 3))
