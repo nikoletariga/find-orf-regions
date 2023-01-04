@@ -1,4 +1,3 @@
-import pdb
 from Bio import SeqIO
 
 # import pdb; pdb.set_trace()
@@ -48,29 +47,51 @@ def triplets(string):
     return ' '.join(string[i:i + 3] for i in range(0, len(string), 3))
 
 
-# def read_seq_file(filepath):
-#     with open(filepath, 'r') as file:
-#         return file.read().replace('\n', '').split()
+def read_seq_file(filepath):
+    with open(filepath, 'r') as file:
+        return file.read().replace('\n', '').split()
 
 
 def read_fasta_file(filepath):
     list_fasta = list()
     for seq_record in SeqIO.parse(filepath, "fasta"):
-        # print(seq_record.id)
-        # print(repr(seq_record.seq))
-        # print(len(seq_record))
         list_fasta.append(str(seq_record.seq))
     return list_fasta
 
 
 def main():
-    # filepath = input("\n\nEnter your filepath: ")
-    # filepath = "DNA.seq"
-    filepath = "example.fasta"
-    # list_of_sequences = read_seq_file(filepath)
-    list_of_sequences = read_fasta_file(filepath)
-    for sequence in list_of_sequences:
+    options = ["give your own sequence", "seq", "fasta"]
+    user_option = ''
+    input_message = "Pick an option with number 1-3:\n"
+
+    for index, item in enumerate(options):
+        input_message += f'{index + 1}) {item}\n'
+
+    input_message += "Your choice: "
+
+    while user_option not in map(str, range(1, len(options) + 1)):
+        user_option = input(input_message)
+
+    user_input = options[int(user_option) - 1]
+    print("You selected: " + user_input)
+
+    if user_input == "give your own sequence":
+        # pdb.set_trace()
+        sequence = input("\n\nEnter your own sequence: ")
         get_orf_region(sequence)
+
+    elif user_input == "seq":
+        # pdb.set_trace()
+        filepath = input("\n\nEnter your seq filepath: ")
+        list_of_sequences = read_seq_file(filepath)
+        for sequence in list_of_sequences:
+            get_orf_region(sequence)
+
+    elif user_input == "fasta":
+        filepath = input("\n\nEnter your fasta filepath: ")
+        list_of_sequences = read_fasta_file(filepath)
+        for sequence in list_of_sequences:
+             get_orf_region(sequence)
 
 
 if __name__ == "__main__":
