@@ -1,4 +1,7 @@
+import pdb
+from Bio import SeqIO
 
+# import pdb; pdb.set_trace()
 start_Codon = "ATG"
 stop_Codons = ["TAA", "TAG", "TGA"]
 
@@ -23,7 +26,7 @@ def get_orf_region(sequence):
 def find_start_codon(sequence):
     for k in range(0, len(sequence), 1):
         # checking for the start codon in the sequence
-        if start_Codon in sequence[k:k+3]:
+        if start_Codon in sequence[k:k + 3]:
             start_codon_sequence = sequence[k:]
             print("Start codon %s found, the start_codon_sequence is: %s."
                   % (start_codon_sequence[:3], triplets(start_codon_sequence)))
@@ -45,15 +48,27 @@ def triplets(string):
     return ' '.join(string[i:i + 3] for i in range(0, len(string), 3))
 
 
-def read_seq_file(filepath):
-    with open(filepath, 'r') as file:
-        return file.read().replace('\n', '').split()
+# def read_seq_file(filepath):
+#     with open(filepath, 'r') as file:
+#         return file.read().replace('\n', '').split()
+
+
+def read_fasta_file(filepath):
+    list_fasta = list()
+    for seq_record in SeqIO.parse(filepath, "fasta"):
+        # print(seq_record.id)
+        # print(repr(seq_record.seq))
+        # print(len(seq_record))
+        list_fasta.append(str(seq_record.seq))
+    return list_fasta
 
 
 def main():
     # filepath = input("\n\nEnter your filepath: ")
-    filepath = "DNA.seq"
-    list_of_sequences = read_seq_file(filepath)
+    # filepath = "DNA.seq"
+    filepath = "example.fasta"
+    # list_of_sequences = read_seq_file(filepath)
+    list_of_sequences = read_fasta_file(filepath)
     for sequence in list_of_sequences:
         get_orf_region(sequence)
 
