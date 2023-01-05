@@ -17,12 +17,12 @@ def get_orf_region(sequence):
 
     ORF_Region, rest_sequence = find_stop_codons(start_codon_sequence)
 
-
     if ORF_Region == "None":
         print("None of the three stop codons were found, so ORF region does not exist.\n")
         return
     print("Continue for the rest_sequence.")
     get_orf_region(rest_sequence)
+
 
 def find_start_codon(sequence):
     for k in range(0, len(sequence), 1):
@@ -45,6 +45,7 @@ def find_stop_codons(start_codon_sequence):
             return ORF_Region, rest_sequence
     return "None", "None"
 
+
 def triplets(string):
     return ' '.join(string[i:i + 3] for i in range(0, len(string), 3))
 
@@ -61,10 +62,24 @@ def read_fasta_file(filepath):
     return list_fasta
 
 
-def main():
-    options = ["give your own sequence", "seq", "fasta"]
+def read_fastq_file(filepath):
+    list_fastq = list ()
+    with open(filepath) as fp:
+        while True:
+            fp.readline()
+            sequence = fp.readline()
+            fp.readline()
+            fp.readline()
+            if len(sequence) == 0:
+                break
+            list_fastq.append(sequence)
+    return list_fastq
+
+
+def select_input():
+    options = ["give your own sequence", ".seq", ".fasta", ".fastq"]
     user_option = ''
-    input_message = "Pick an option with number 1-3:\n"
+    input_message = "Pick an option with number 1-4:\n"
 
     for index, item in enumerate(options):
         input_message += f'{index + 1}) {item}\n'
@@ -76,26 +91,35 @@ def main():
 
     user_input = options[int(user_option) - 1]
     print("You selected: " + user_input)
+    return user_input
+
+
+def main():
+    user_input = select_input()
 
     if user_input == "give your own sequence":
         # pdb.set_trace()
         sequence = input("\n\nEnter your own sequence: ")
         get_orf_region(sequence)
 
-    elif user_input == "seq":
-        # pdb.set_trace()
-        filepath = input("\n\nEnter your seq filepath: ")
+    elif user_input == ".seq":
+        filepath = input("\n\nEnter your .seq filepath: ")
         list_of_sequences = read_seq_file(filepath)
         for sequence in list_of_sequences:
             get_orf_region(sequence)
 
-    elif user_input == "fasta":
-        filepath = input("\n\nEnter your fasta filepath: ")
+    elif user_input == ".fasta":
+        filepath = input("\n\nEnter your .fasta filepath: ")
         list_of_sequences = read_fasta_file(filepath)
         for sequence in list_of_sequences:
-             get_orf_region(sequence)
+            get_orf_region(sequence)
+
+    elif user_input == ".fastq":
+        filepath = input("\n\nEnter your .fastq filepath: ")
+        list_of_sequences = read_fastq_file(filepath)
+        for sequence in list_of_sequences:
+            get_orf_region(sequence)
 
 
 if __name__ == "__main__":
     main()
-
