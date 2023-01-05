@@ -5,9 +5,11 @@ start_Codon = "ATG"
 stop_Codons = ["TAA", "TAG", "TGA"]
 
 
-def get_orf_region(sequence):
+def get_orf_region(sequence, counter):
     sequence = sequence.upper()
     print("The sequence is: " + sequence + ".")
+    if counter == 1:
+        complementary_sequence(sequence)
 
     start_codon_sequence = find_start_codon(sequence)
 
@@ -15,13 +17,17 @@ def get_orf_region(sequence):
         print("There is not a start codon in this sequence: " + sequence + ".\n")
         return
 
-    ORF_Region, rest_sequence = find_stop_codons(start_codon_sequence)
+    orf_region, rest_sequence = find_stop_codons(start_codon_sequence, counter)
 
-    if ORF_Region == "None":
-        print("None of the three stop codons were found, so ORF region does not exist.\n")
+    if orf_region == "None":
+        print("None of the three stop codons were found, so orf region does not exist.\n")
+        return
+    elif len(rest_sequence) == 0:
+        print("No rest_sequence.\n")
         return
     print("Continue for the rest_sequence.")
-    get_orf_region(rest_sequence)
+    counter += 1
+    get_orf_region(rest_sequence, counter)
 
 
 def find_start_codon(sequence):
@@ -35,19 +41,28 @@ def find_start_codon(sequence):
     return "None"
 
 
-def find_stop_codons(start_codon_sequence):
+def find_stop_codons(start_codon_sequence, counter):
     for k in range(0, len(start_codon_sequence), 3):
         # checking for any of the stop codons in the sequence
         if any(s in start_codon_sequence[k:k + 3] for s in stop_Codons):
-            ORF_Region = start_codon_sequence[:k + 3]
+            orf_region = start_codon_sequence[:k + 3]
             rest_sequence = start_codon_sequence[k + 3:]
-            print("Stop codon %s found, the ORF_Region is: %s.\n" % (ORF_Region[-3:], triplets(ORF_Region)))
-            return ORF_Region, rest_sequence
+            print("Stop codon %s found, the %s orf_region is: %s.\n" % (orf_region[-3:], counter, triplets(orf_region)))
+            return orf_region, rest_sequence
     return "None", "None"
 
 
 def triplets(string):
     return ' '.join(string[i:i + 3] for i in range(0, len(string), 3))
+
+
+def complementary_sequence(sequence):
+    sequence = sequence.replace("A", "t").replace(
+        "C", "g").replace("T", "a").replace("G", "c")
+    sequence = sequence.upper()
+    print("The complementary sequence is: " + sequence + ".")
+    print("The reversed-complementary sequence is: " + sequence[::-1] + ".")
+    return sequence
 
 
 def read_seq_file(filepath):
@@ -63,7 +78,7 @@ def read_fasta_file(filepath):
 
 
 def read_fastq_file(filepath):
-    list_fastq = list ()
+    list_fastq = list()
     with open(filepath) as fp:
         while True:
             fp.readline()
@@ -98,27 +113,26 @@ def main():
     user_input = select_input()
 
     if user_input == "give your own sequence":
-        # pdb.set_trace()
         sequence = input("\n\nEnter your own sequence: ")
-        get_orf_region(sequence)
+        get_orf_region(sequence, 1)
 
     elif user_input == ".seq":
         filepath = input("\n\nEnter your .seq filepath: ")
         list_of_sequences = read_seq_file(filepath)
         for sequence in list_of_sequences:
-            get_orf_region(sequence)
+            get_orf_region(sequence, 1)
 
     elif user_input == ".fasta":
         filepath = input("\n\nEnter your .fasta filepath: ")
         list_of_sequences = read_fasta_file(filepath)
         for sequence in list_of_sequences:
-            get_orf_region(sequence)
+            get_orf_region(sequence, 1)
 
     elif user_input == ".fastq":
         filepath = input("\n\nEnter your .fastq filepath: ")
         list_of_sequences = read_fastq_file(filepath)
         for sequence in list_of_sequences:
-            get_orf_region(sequence)
+            get_orf_region(sequence, 1)
 
 
 if __name__ == "__main__":
