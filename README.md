@@ -13,7 +13,7 @@ In this case it prints "Start codon found, but ORF region does not exist"
 In this case it prints "There is not start codon."
 
 In addition, this code:
-1. Check for multiple ORF regions in every sequence and prints the number of the ORF regions. 
+1. Checks for multiple ORF regions in every sequence and prints the number of the ORF regions. 
 2. Gives the complementary sequence.
 3. Gives the reversed complementary sequence. 
 4. Splits the ORF regions in triplets. 
