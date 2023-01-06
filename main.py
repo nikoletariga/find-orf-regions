@@ -1,6 +1,5 @@
 from Bio import SeqIO
 
-# import pdb; pdb.set_trace()
 start_Codon = "ATG"
 stop_Codons = ["TAA", "TAG", "TGA"]
 
